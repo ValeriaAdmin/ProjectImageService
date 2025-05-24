@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Photos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: #f4f5fb;
+            font-family: 'Inter', Arial, sans-serif;
+        }
+
+        .main-block {
+            width: 540px;
+            max-width: 99vw;
+            margin: 0 auto;
+            padding-top: 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: transparent;
+        }
+
+        .header-title {
+            font-weight: 700;
+            font-size: 16px;
+            line-height: 14px;
+            letter-spacing: -0.02em;
+            color: #0b0b0b;
+            margin: 0 auto;
+            text-align: center;
+            background: transparent;
+        }
+
+        .header-subtitle {
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 21px;
+            letter-spacing: -0.04em;
+            color: #555;
+            margin: 0 auto 6px auto;
+            text-align: center;
+            background: transparent;
+        }
+
+        /* --- ВКЛАДКИ --- */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            width: 160px;
+            height: 24px;
+            margin: 12px auto 20px auto;
+            background: transparent;
+        }
+
+        .tab {
+            background: none;
+            border: none;
+            outline: none;
+            font-family: 'Inter', Arial, sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 24px;
+            width: 70px;
+            height: 24px;
+            text-align: center;
+            vertical-align: middle;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+            color: #c4cbe2;
+            border-bottom: none;
+            transition: color 0.18s;
+            cursor: pointer;
+            background: transparent;
+        }
+
+        .tab.active {
+            color: #2563eb;
+            border-bottom: none;
+            cursor: default;
+            background: transparent;
+        }
+
+        /* --- ДРОП-ЗОНА --- */
+        .drop-area {
+            width: 539px;
+            min-width: 0;
+            max-width: 100%;
+            height: 200px;
+            border: 2px dashed #69f;
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            margin: 0 auto 0 auto;
+            box-sizing: border-box;
+            background: transparent;
+            font-size: 14px;
+            user-select: none;
+        }
+
+        .cloud-icon {
+            width: 48px;
+            height: 48px;
+            color: #2563eb;
+            margin-bottom: 8px;
+        }
+
+        .drop-main-text {
+            font-family: 'Inter', Arial, sans-serif;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 17px;
+            letter-spacing: 0;
+            color: #23272f;
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        .drop-sub {
+            width: 320px;
+            background: transparent;
+            color: #ADC0F8;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 18px;
+            margin: 4px auto 0 auto;
+            text-align: center;
+            padding: 4px 0;
+            border-radius: 8px;
+            display: block;
+            font-family: 'Inter', Arial, sans-serif;
+            letter-spacing: 0;
+        }
+
+        .browse-btn {
+            width: 539px;
+            min-width: 0;
+            max-width: 100%;
+            margin: 20px auto 0 auto;
+            display: block;
+            background: #2563eb;
+            color: #fff;
+            font-family: 'Inter', Arial, sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            height: 39px;
+            cursor: pointer;
+            box-shadow: 0 2px 12px rgba(37, 99, 235, 0.07);
+            transition: background 0.18s, color 0.18s;
+            text-transform: uppercase;
+            padding: 0;
+        }
+
+        .current-upload {
+            width: 540px;
+            margin: 26px auto 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 4px;
+        }
+
+        .current-upload label {
+            display: block;
+            margin-bottom: 9px;
+            font-weight: 700;
+            font-size: 20px;
+            line-height: 24px;
+            color: #23272f;
+            font-family: 'Inter', Arial, sans-serif;
+        }
+
+        .upload-row {
+            display: flex;
+            width: 100%;
+            gap: 12px;
+            background: #fff;
+            border: 1.5px solid #1976ed;
+            border-radius: 8px;
+            padding: 0 8px 0 14px;
+            height: 48px;
+            align-items: center;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        .current-upload input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            height: 44px;
+            font-family: 'Inter', Arial, sans-serif;
+        }
+
+        .current-upload button {
+            width: 90px;
+            margin-left: 6px;
+            height: 39px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            box-shadow: none;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background 0.18s;
+            font-family: 'Inter', Arial, sans-serif;
+        }
+
+        .current-upload button:hover {
+            background: #1947b9;
+        }
+
+        .browse-btn:hover {
+            background: #1947b9;
+        }
+
+        .tab-content {
+            width: 100%;
+        }
+
+        @media (max-width: 600px) {
+            .main-block {
+                width: 96vw;
+                padding: 0 2vw;
+                background: transparent;
+            }
+
+            .drop-area {
+                width: 96vw;
+                min-width: 0;
+                background: transparent;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="main-block">
+    <div class="header-title">Upload Photos</div>
+    <div class="header-subtitle">Upload selfies, memes, or any fun pictures here.</div>
+    <div class="tabs">
+        <button id="upload-tab-btn" class="tab active">Upload</button>
+        <button id="images-tab-btn" class="tab">Images</button>
+    </div>
+    <div id="upload-tab" class="tab-content" style="display:block;">
+        <div class="drop-area">
+            <svg class="cloud-icon" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24">
+                <path d="M12 16v-8m0 0L8 12m4-4 4 4M20 16.58A5 5 0 0 0 18 6.3V6A6 6 0 0 0 6 6v.3A5 5 0 0 0 4 16.58"/>
+            </svg>
+            <div class="drop-main-text">Select a file or drag and drop here</div>
+            <div class="drop-sub">
+                Only support .jpg, .png and gif.<br>
+                Maximum file size is 5MB
+            </div>
+        </div>
+        <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+            <input type="file" id="fileInput" name="file" style="display:none;"/>
+            <button type="button" class="browse-btn">Browse your file</button>
+            <button type="submit" style="display:none;">Upload</button>
+        </form>
+        <div class="current-upload">
+            <label>Current Upload</label>
+            <div class="upload-row">
+                <input type="text" value="https://" readonly/>
+                <button>COPY</button>
+            </div>
+        </div>
+        <div id="upload-status" style="margin-top: 12px; font-size: 14px; font-weight: 600; color: green; text-align: center;"></div>
+    </div>
+    <div id="images-tab" class="tab-content" style="display:none;">
+        <div id="images-list"
+             style="padding: 16px; font-family: 'Inter', Arial, sans-serif; font-size: 16px; color: #333;">
+            Загрузка списка изображений...
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const uploadTabBtn = document.getElementById('upload-tab-btn');
+        const imagesTabBtn = document.getElementById('images-tab-btn');
+        const uploadTab = document.getElementById('upload-tab');
+        const imagesTab = document.getElementById('images-tab');
+
+        uploadTabBtn.addEventListener('click', function () {
+            uploadTabBtn.classList.add('active');
+            imagesTabBtn.classList.remove('active');
+            uploadTab.style.display = 'block';
+            imagesTab.style.display = 'none';
+        });
+
+        imagesTabBtn.addEventListener('click', function () {
+            imagesTabBtn.classList.add('active');
+            uploadTabBtn.classList.remove('active');
+            uploadTab.style.display = 'none';
+            imagesTab.style.display = 'block';
+            loadImages();
+        });
+
+        const fileInput = document.getElementById('fileInput');
+        const browseBtn = document.querySelector('.browse-btn');
+        const currentUploadInput = document.querySelector('.current-upload input');
+        const copyBtn = document.querySelector('.current-upload button');
+
+        browseBtn.addEventListener('click', function () {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', function () {
+            if (fileInput.files.length === 0) return;
+
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData,
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Ошибка загрузки');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    currentUploadInput.value = data.url || 'Ошибка: ссылка не получена';
+                    const statusEl = document.getElementById('upload-status');
+                    statusEl.textContent = '✅ Файл успешно загружен!';
+                    setTimeout(() => {
+                        statusEl.textContent = '';
+                    }, 4000);
+                    fileInput.value = '';
+                    loadImages();
+                })
+                .catch(() => {
+                    currentUploadInput.value = 'Ошибка загрузки файла';
+                });
+        });
+
+        copyBtn.addEventListener('click', function () {
+            currentUploadInput.select();
+            currentUploadInput.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(currentUploadInput.value);
+        });
+
+        function loadImages() {
+            const imagesList = document.getElementById('images-list');
+            imagesList.textContent = 'Загрузка списка изображений...';
+
+            fetch('/images/list')
+                .then(response => {
+                    if (!response.ok) throw new Error('Ошибка загрузки списка изображений');
+                    return response.json();
+                })
+                .then(files => {
+                    if (!Array.isArray(files)) {
+                        throw new Error('Некорректный формат данных');
+                    }
+                    if (files.length === 0) {
+                        imagesList.innerHTML = '<div style="text-align:center; color:#b1b6ca;">Нет загруженных изображений</div>';
+                        return;
+                    }
+                    let html = '<table style="width:100%; border-collapse: collapse;">';
+                    html += '<thead><tr><th style="text-align:left; padding:8px; border-bottom: 1px solid #ddd;">Имя файла</th><th style="text-align:left; padding:8px; border-bottom: 1px solid #ddd;">Превью</th></tr></thead>';
+                    html += '<tbody>';
+                    files.forEach(file => {
+                        html += `<tr>
+                          <td style="padding:8px; border-bottom: 1px solid #ddd;">${file.name}</td>
+                          <td style="padding:8px; border-bottom: 1px solid #ddd;">
+                            <img src="${file.url}" alt="${file.name}" style="height:50px; border-radius:4px;">
+                          </td>
+                        </tr>`;
+                        });
+                    html += '</tbody></table>';
+                    imagesList.innerHTML = html;
+                })
+                .catch(err => {
+                    imagesList.innerHTML = '<div style="text-align:center; color:#b1b6ca;">Ошибка загрузки списка изображений.</div>';
+                    console.error(err);
+                    currentUploadInput.value = 'https://';
+                });
+        }
+
+        loadImages();
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Hosting</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #000;
+            color: #fff;
+        }
+        .hero-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            padding-top: 60px;
+        }
+        .hero-text {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .hero-text h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        .hero-text p {
+            font-size: 14px;
+            color: #ccc;
+            margin-bottom: 24px;
+        }
+        .hero-text button {
+            padding: 10px 20px;
+            background-color: #0066ff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .hero-text button:hover {
+            background-color: #0047cc;
+        }
+        .hero-image img {
+            max-height: 80vh;
+            object-fit: contain;
+        }
+    </style>
+    <script>
+        const heroImages = [
+            '/static/hero/hero01.png',
+            '/static/hero/hero02.png',
+            '/static/hero/hero03.png',
+            '/static/hero/hero04.png',
+            '/static/hero/hero05.png'
+        ];
+        const randomImage = heroImages[Math.floor(Math.random() * heroImages.length)];
+        document.addEventListener("DOMContentLoaded", function () {
+            const img = document.createElement("img");
+            img.src = randomImage;
+            img.alt = "Hero Image";
+            document.querySelector(".hero-image").appendChild(img);
+        });
+    </script>
+</head>
+<body>
+    <div class="hero-container">
+        <div class="hero-text">
+            <h1>Upload Photos</h1>
+            <p>Upload selfies, memes, or any fun pictures here.</p>
+            <button onclick="window.location.href='/upload'">TAIL-ENT SHOWCASE</button>
+        </div>
+        <div class="hero-image"></div>
+    </div>
+</body>
+</html>
