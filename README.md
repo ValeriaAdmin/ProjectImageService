@@ -45,13 +45,12 @@ ProjectImageService/
 - Docker Compose
 
 ### 2. Run the app:
-```bash
 docker compose up --build
----
 
-3. Access:
+### 3. Access:
 	•	Upload page: http://localhost:8080
 	•	Uploaded image links: http://localhost:8080/images/filename.jpg
+---
 
 🛡️ Functional & Non-Functional Requirements
 	•	File validation on size and type
