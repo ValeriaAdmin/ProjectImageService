@@ -26,15 +26,15 @@ A lightweight image upload and hosting web app written in Python with a minimal 
 
 ## 📂 Project Structure
 ProjectImageService/
-├── app.py                  # Python backend server
-├── static/                 # Frontend HTML/CSS/JS
-├── images/                 # (volume) for uploaded images
-├── logs/                   # (volume) for log files
-├── requirements.txt        # Python dependencies
-├── docker-compose.yml      # Compose config
-├── Dockerfile              # Backend Docker image
-├── nginx.conf              # Nginx config
-└── README.md               # This file
+├── app.py  
+├── static/
+├── images/
+├── logs/
+├── requirements.txt 
+├── docker-compose.yml 
+├── Dockerfile 
+├── nginx.conf
+└── README.md 
 
 ---
 
@@ -48,9 +48,10 @@ ProjectImageService/
 docker compose up --build
 
 ### 3. Access:
-	•	Upload page: http://localhost:8080
-	•	Uploaded image links: http://localhost:8080/images/filename.jpg
----
+- Upload page: http://localhost:8000
+- Uploaded image links: http://localhost:8000/images/filename.jpg
+ 
+ ---
 
 🛡️ Functional & Non-Functional Requirements
 	•	File validation on size and type
