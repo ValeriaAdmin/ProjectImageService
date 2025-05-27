@@ -44,7 +44,7 @@ class AppHandler(BaseHTTPRequestHandler):
         elif self.path == '/gallery':
             try:
                 logging.info("do_GET: формирование страницы галереи")
-                files = [f for f in os.listdir(IMAGES_DIR) if f.lower().endswith(('.jpg', '.jpeg', '.png', '.gif'))]
+                files = [f for f in os.listdir(IMAGES_DIR) if f.lower().endswith(('.jpg', '.png', '.gif'))]
 
                 html = '''
                     <!DOCTYPE html>
@@ -94,7 +94,7 @@ class AppHandler(BaseHTTPRequestHandler):
                 files = [
                     {"name": f, "url": f"/images/{f}"}
                     for f in os.listdir(IMAGES_DIR)
-                    if f.lower().endswith(('.jpg', '.jpeg', '.png', '.gif'))
+                    if f.lower().endswith(('.jpg', '.png', '.gif'))
                 ]
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json')
@@ -152,13 +152,17 @@ class AppHandler(BaseHTTPRequestHandler):
 
         elif self.path == '/images/':
             try:
-                files = [f for f in os.listdir(IMAGES_DIR) if f.lower().endswith(('.jpg', '.jpeg', '.png', '.gif'))]
+                files = [f for f in os.listdir(IMAGES_DIR) if f.lower().endswith(('.jpg', '.png', '.gif'))]
                 logging.info(f"do_GET: список изображений запрошен, найдено {len(files)} файлов.")
                 self.send_response(200)
-                self.send_header("Content-Type", "application/json")
-                self.send_header('Access-Control-Allow-Origin', '*')
+                self.send_header("Content-Type", "text/html; charset=utf-8")
                 self.end_headers()
-                self.wfile.write(json.dumps(files).encode("utf-8"))
+
+                html = "<html><body><h2>Список изображений:</h2><ul>"
+                for f in files:
+                    html += f"<li><a href='/images/{f}' target='_blank'>{f}</a></li>"
+                html += "</ul></body></html>"
+                self.wfile.write(html.encode("utf-8"))
                 return
             except Exception as e:
                 logging.error(f"do_GET: Ошибка при получении списка изображений: {e}")
@@ -243,6 +247,7 @@ class AppHandler(BaseHTTPRequestHandler):
                         self.wfile.write(json.dumps({"error": f"Ошибка обработки файла: {e}"}).encode('utf-8'))
                         return
 
+                    logging.debug(f"Размер полученного файла: {len(file_data)} байт")
                     if len(file_data) > MAX_FILE_SIZE:
                         logging.warning("do_POST: файл слишком большой")
                         self.send_response(400)
@@ -271,7 +276,7 @@ class AppHandler(BaseHTTPRequestHandler):
                     else:
                         ext = ""
 
-                    if ext not in {'.jpg', '.jpeg', '.png', '.gif'}:
+                    if ext not in {'.jpg', '.png', '.gif'}:
                         logging.error(f"do_POST: ошибка - неподдерживаемый формат файла ({original_filename}).")
                         self.send_response(400)
                         self.send_header('Content-Type', 'application/json')

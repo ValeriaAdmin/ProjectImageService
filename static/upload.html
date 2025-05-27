@@ -92,8 +92,9 @@
         /* --- ДРОП-ЗОНА --- */
         .drop-area {
             width: 539px;
-            min-width: 0;
             max-width: 100%;
+            min-width: 0;
+            transition: border-color 0.3s ease;
             height: 200px;
             border: 2px dashed #69f;
             border-radius: 14px;
@@ -313,6 +314,84 @@
         });
 
         const fileInput = document.getElementById('fileInput');
+
+        // Drag & Drop support
+        const dropArea = document.querySelector('.drop-area');
+
+        dropArea.addEventListener('dragover', e => {
+            e.preventDefault();
+            dropArea.style.borderColor = '#1947b9';
+            dropArea.style.background = '#e8efff';
+        });
+
+        dropArea.addEventListener('dragleave', () => {
+            dropArea.style.borderColor = '#69f';
+            dropArea.style.background = 'transparent';
+        });
+
+        dropArea.addEventListener('drop', e => {
+            e.preventDefault();
+            dropArea.style.borderColor = '#69f';
+            dropArea.style.background = 'transparent';
+            const file = e.dataTransfer.files[0];
+            if (!file) return;
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            const statusEl = document.getElementById('upload-status');
+            const dropMainText = document.querySelector('.drop-main-text');
+            if (!allowedTypes.includes(file.type)) {
+                dropMainText.textContent = '❌ Неподдерживаемый формат файла';
+                statusEl.textContent = '❌ Неподдерживаемый формат файла';
+                statusEl.style.color = 'red';
+                setTimeout(() => dropMainText.textContent = 'Select a file or drag and drop here', 4000);
+                return;
+            }
+            // Проверка размера файла (5MB)
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            if (file.size > maxSize) {
+                dropMainText.textContent = '❌ Слишком большой файл (>5MB)';
+                statusEl.textContent = '❌ Превышен максимальный размер файла (5MB)';
+                statusEl.style.color = 'red';
+                setTimeout(() => dropMainText.textContent = 'Select a file or drag and drop here', 4000);
+                return;
+            }
+            console.log('Перетаскивание файла: ', file);
+            const formData = new FormData();
+            formData.append('file', file);
+            fetch('/upload', {
+                method: 'POST',
+                body: formData,
+            })
+                .then(response => {
+                    return response.json().then(data => {
+                        if (!response.ok) {
+                            dropMainText.textContent = '❌ Ошибка загрузки';
+                            statusEl.textContent = '❌ ' + (data.error || 'Файл не загружен. Попробуйте снова.');
+                            statusEl.style.color = 'red';
+                            setTimeout(() => dropMainText.textContent = 'Select a file or drag and drop here', 4000);
+                            throw new Error(data.error || 'Ошибка загрузки');
+                        }
+                        return data;
+                    });
+                })
+                .then(data => {
+                    currentUploadInput.value = data.url || 'Ошибка: ссылка не получена';
+                    dropMainText.textContent = '✅ Файл загружен';
+                    statusEl.textContent = '✅ Файл успешно загружен!';
+                    setTimeout(() => {
+                        statusEl.textContent = '';
+                        dropMainText.textContent = 'Select a file or drag and drop here';
+                    }, 4000);
+                    fileInput.value = '';
+                    loadImages();
+                })
+                .catch(() => {
+                    currentUploadInput.value = 'Ошибка загрузки файла';
+                    dropMainText.textContent = '❌ Ошибка загрузки';
+                    statusEl.textContent = '❌ Файл не загружен. Попробуйте снова.';
+                    statusEl.style.color = 'red';
+                    setTimeout(() => dropMainText.textContent = 'Select a file or drag and drop here', 4000);
+                });
+        });
         const browseBtn = document.querySelector('.browse-btn');
         const currentUploadInput = document.querySelector('.current-upload input');
         const copyBtn = document.querySelector('.current-upload button');
@@ -325,6 +404,24 @@
             if (fileInput.files.length === 0) return;
 
             const file = fileInput.files[0];
+            // Проверка формата файла
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            if (!allowedTypes.includes(file.type)) {
+                const statusEl = document.getElementById('upload-status');
+                statusEl.textContent = '❌ Неподдерживаемый формат файла';
+                statusEl.style.color = 'red';
+                return;
+            }
+
+            // Проверка размера файла (5MB)
+            const maxSize = 5 * 1024 * 1024;
+            if (file.size > maxSize) {
+                const statusEl = document.getElementById('upload-status');
+                statusEl.textContent = '❌ Превышен максимальный размер файла (5MB)';
+                statusEl.style.color = 'red';
+                return;
+            }
+
             const formData = new FormData();
             formData.append('file', file);
 
@@ -333,10 +430,15 @@
                 body: formData,
             })
                 .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Ошибка загрузки');
-                    }
-                    return response.json();
+                    return response.json().then(data => {
+                        if (!response.ok) {
+                            const statusEl = document.getElementById('upload-status');
+                            statusEl.textContent = '❌ ' + (data.error || 'Файл не загружен. Попробуйте снова.');
+                            statusEl.style.color = 'red';
+                            throw new Error(data.error || 'Ошибка загрузки');
+                        }
+                        return data;
+                    });
                 })
                 .then(data => {
                     currentUploadInput.value = data.url || 'Ошибка: ссылка не получена';
@@ -350,6 +452,9 @@
                 })
                 .catch(() => {
                     currentUploadInput.value = 'Ошибка загрузки файла';
+                    const statusEl = document.getElementById('upload-status');
+                    statusEl.textContent = '❌ Файл не загружен. Попробуйте снова.';
+                    statusEl.style.color = 'red';
                 });
         });
 
@@ -381,12 +486,14 @@
                     html += '<tbody>';
                     files.forEach(file => {
                         html += `<tr>
-                          <td style="padding:8px; border-bottom: 1px solid #ddd;">${file.name}</td>
+                          <td style="padding:8px; border-bottom: 1px solid #ddd;">
+                            <a href="${file.url}" target="_blank" style="color:#2563eb; text-decoration: none;">${file.name}</a>
+                          </td>
                           <td style="padding:8px; border-bottom: 1px solid #ddd;">
                             <img src="${file.url}" alt="${file.name}" style="height:50px; border-radius:4px;">
                           </td>
                         </tr>`;
-                        });
+                    });
                     html += '</tbody></table>';
                     imagesList.innerHTML = html;
                 })
