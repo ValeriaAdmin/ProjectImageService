@@ -11,7 +11,7 @@ import json
 import logging
 
 IMAGES_DIR = os.path.join(os.getcwd(), "images")
-LOGS_DIR = os.path.join(os.getcwd(), "logs")
+LOGS_DIR = "/app/logs"
 
 os.makedirs(IMAGES_DIR, exist_ok=True)
 os.makedirs(LOGS_DIR, exist_ok=True)
@@ -306,7 +306,7 @@ class AppHandler(BaseHTTPRequestHandler):
                     self.send_header("Access-Control-Allow-Origin", "*")
                     self.end_headers()
                     host = self.headers.get("Host", f"{HOST}:{PORT}")
-                    image_url = f"http://{host}/images/{filename}"
+                    image_url = f"http://{host}:{PORT}/images/{filename}"
                     self.wfile.write(json.dumps({"url": image_url}).encode("utf-8"))
                     return
 
